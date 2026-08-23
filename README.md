@@ -55,6 +55,15 @@ Stabilize contracts; swap implementations freely. Full catalogue: [docs/CONTRACT
 
 Schemas: [`schemas/`](./schemas/) · Types: [`types/`](./types/) · Examples: [`examples/`](./examples/)
 
+### Validate contracts locally
+
+```bash
+npm ci
+npm run validate   # Ajv draft 2020-12 against all examples (+ invalid must fail)
+```
+
+CI runs the same check on every push/PR to `main`.
+
 ---
 
 ## Paradigms in play
@@ -75,23 +84,25 @@ Schemas: [`schemas/`](./schemas/) · Types: [`types/`](./types/) · Examples: [`
 ```
 autofix-polyglot/
 ├── ROADMAP.md
+├── package.json                 # npm run validate
+├── scripts/validate-schemas.mjs
+├── .github/workflows/ci.yml
 ├── docs/
 │   ├── ARCHITECTURE.md
 │   ├── CONTRACTS.md
 │   ├── PARADIGMS.md
 │   ├── ISO-MAPPING.md
-│   └── adr/                 # Architecture Decision Records
+│   └── adr/
 ├── schemas/
-│   ├── link-record.schema.json
-│   ├── discovery-message.schema.json
-│   ├── discover-request.schema.json
-│   └── discover-response.schema.json
 ├── types/
 │   ├── typescript/
 │   └── go/
 ├── examples/
 │   ├── link-records/
-│   └── discovery-messages/
+│   ├── discovery-messages/
+│   ├── discover-request/
+│   ├── discover-response/
+│   └── invalid/                 # must be rejected by schemas
 └── README.md
 ```
 

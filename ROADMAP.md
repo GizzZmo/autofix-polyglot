@@ -16,8 +16,9 @@ Goal: keep every language and runtime interchangeable behind stable, versioned i
 | Discovery + Discover API schemas | Done |
 | Contract catalogue | Done — `docs/CONTRACTS.md` |
 | Language bindings (TS + Go) | Done (skeleton) — `types/` |
-| Golden examples | Started — `examples/` |
-| ADRs | **Done (001–005)** — `docs/adr/` |
+| Golden examples | Done — `examples/` (+ invalid cases) |
+| Schema validation CI | **Done** — `.github/workflows/ci.yml` |
+| ADRs | Done (001–005) — `docs/adr/` |
 | Observability contracts | Not started |
 | Key encoding formalized | Done |
 
@@ -49,7 +50,7 @@ Goal: keep every language and runtime interchangeable behind stable, versioned i
 | JavaScript (browser client) | Minimal subset for `data-autofix-*` only | Pending |
 | Optional | OpenAPI 3.1 for the discover HTTP surface | Pending |
 
-**Next:** wire engine to these types (or generate from schema) and add a tiny CI job that validates examples against schemas.
+**Next:** wire engine to these types (or generate from schema).
 
 ### Phase 3 — Architecture Decision Records (ADRs) (complete for core set)
 
@@ -59,12 +60,13 @@ Goal: keep every language and runtime interchangeable behind stable, versioned i
 - [x] ADR-004: KV key = base64(URL) and collision / length policy
 - [x] ADR-005: Soft-404 heuristics stay in healer, not edge
 
-### Phase 4 — Golden examples & test vectors (started)
+### Phase 4 — Golden examples & test vectors (complete)
 
 - [x] `examples/link-records/` — PENDING / HEALED / DEAD / HEALTHY fixtures
 - [x] `examples/discovery-messages/` — valid queue payload
-- [ ] Invalid / edge-case fixtures
-- [ ] Contract tests (JSON Schema validation) runnable in CI of this repo and referenced by engine
+- [x] `examples/discover-request/` + `discover-response/`
+- [x] Invalid / edge-case fixtures under `examples/invalid/`
+- [x] Contract tests (JSON Schema validation) in CI — `npm run validate`
 
 ### Phase 5 — Observability contracts
 
@@ -87,7 +89,7 @@ Goal: keep every language and runtime interchangeable behind stable, versioned i
 3. Update `docs/CONTRACTS.md` in the same PR as schema changes.
 4. Mark roadmap checkboxes when a phase item lands.
 5. After type changes, update the corresponding engine files so they stay aligned.
-6. **Immediate follow-ups:** (a) align engine `urlKey` / `keyFor` with the canonical TextEncoder rule, (b) add schema-validation CI, (c) optional OpenAPI for `/v1/discover`.
+6. Run `npm run validate` (or rely on CI) before merging schema/example changes.
 
 ---
 
