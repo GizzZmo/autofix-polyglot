@@ -13,12 +13,13 @@ Goal: keep every language and runtime interchangeable behind stable, versioned i
 |------|--------|
 | Layer model (ISO-style) | Done — see `docs/` |
 | LinkRecord schema | Done — `schemas/link-record.schema.json` |
-| DiscoveryMessage schema | **Done (this commit)** |
-| Discover API schemas | **Done (this commit)** |
-| Contract catalogue | **Done — `docs/CONTRACTS.md`** |
-| Language bindings | Not started |
-| Golden test vectors | Not started |
+| DiscoveryMessage schema | Done |
+| Discover API schemas | Done |
+| Contract catalogue | Done — `docs/CONTRACTS.md` |
+| Language bindings (TS + Go) | **Done (skeleton)** — `types/` |
+| Golden test vectors | **Started** — `examples/` |
 | Observability contracts | Not started |
+| Key encoding formalized | **Done** |
 
 ---
 
@@ -31,26 +32,28 @@ Goal: keep every language and runtime interchangeable behind stable, versioned i
 - [x] ISO-style mapping (software, not networking)
 - [x] Shared `LinkRecord` JSON Schema
 
-### Phase 1 — Complete the contract surface (in progress → this commit)
+### Phase 1 — Complete the contract surface (complete)
 
 - [x] `DiscoveryMessage` schema (Edge → Queue)
 - [x] `POST /v1/discover` request & response schemas
 - [x] Single catalogue of all boundaries (`docs/CONTRACTS.md`)
-- [ ] Key encoding rule formalized (safe base64 of UTF-8 URL) as a normative note
-- [ ] Version field / `$id` consistency across schemas
+- [x] Key encoding rule formalized (UTF-8 bytes → Std base64)
+- [x] Version field / `$id` consistency across schemas
 
-### Phase 2 — Multi-language type bindings
+### Phase 2 — Multi-language type bindings (in progress)
 
 Generate or hand-maintain types so each runtime cannot drift:
 
-| Language / runtime | Target |
-|--------------------|--------|
-| TypeScript (Edge Worker) | `types/link-record.ts`, `types/discovery.ts` |
-| Go (Healer) | `types/linkrecord.go` (or embed schema validation) |
-| JavaScript (browser client) | Minimal subset for `data-autofix-*` only |
-| Optional | OpenAPI 3.1 for the discover HTTP surface |
+| Language / runtime | Target | Status |
+|--------------------|--------|--------|
+| TypeScript (Edge Worker) | `types/typescript/*.ts` | Done (skeleton) |
+| Go (Healer) | `types/go/linkrecord.go` | Done (skeleton) |
+| JavaScript (browser client) | Minimal subset for `data-autofix-*` only | Pending |
+| Optional | OpenAPI 3.1 for the discover HTTP surface | Pending |
 
 Acceptance: engine code can import / copy-paste from this repo without inventing parallel structs.
+
+**Next:** wire engine to these types (or generate from schema) and add a tiny CI job that validates examples against schemas.
 
 ### Phase 3 — Architecture Decision Records (ADRs)
 
@@ -60,10 +63,11 @@ Acceptance: engine code can import / copy-paste from this repo without inventing
 - [ ] ADR-004: KV key = base64(URL) and collision / length policy
 - [ ] ADR-005: Soft-404 heuristics stay in healer, not edge
 
-### Phase 4 — Golden examples & test vectors
+### Phase 4 — Golden examples & test vectors (started)
 
-- [ ] `examples/link-records/` — PENDING / HEALED / DEAD / HEALTHY fixtures
-- [ ] `examples/discovery-messages/` — valid & invalid queue payloads
+- [x] `examples/link-records/` — PENDING / HEALED / DEAD / HEALTHY fixtures
+- [x] `examples/discovery-messages/` — valid queue payload
+- [ ] Invalid / edge-case fixtures
 - [ ] Contract tests (JSON Schema validation) runnable in CI of this repo and referenced by engine
 
 ### Phase 5 — Observability contracts
@@ -86,6 +90,7 @@ Acceptance: engine code can import / copy-paste from this repo without inventing
 2. Any new cross-language field must appear in the relevant JSON Schema first.
 3. Update `docs/CONTRACTS.md` in the same PR as schema changes.
 4. Mark roadmap checkboxes when a phase item lands.
+5. After type changes, update the corresponding engine files so they stay aligned.
 
 ---
 

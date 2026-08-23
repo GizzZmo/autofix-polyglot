@@ -1,0 +1,7 @@
+{
+  "urls": [
+    "https://example.com/missing-page",
+    "https://other.example/404"
+  ],
+  "discovered_at": "2026-08-23T19:00:00Z"
+}

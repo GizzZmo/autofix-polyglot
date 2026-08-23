@@ -32,7 +32,7 @@ Borrow the *structure* of the **ISO/OSI model** (clear layers + stable interface
 
 | Boundary | Contract |
 |----------|----------|
-| Edge ↔ KV | Key = safe base64(url); JSON `LinkRecord` |
+| Edge ↔ KV | Key = UTF-8 base64(url); JSON `LinkRecord` |
 | Edge ↔ Queue | `DiscoveryMessage` |
 | Edge/Queue ↔ Healer | `POST /v1/discover` |
 | Healer ↔ KV | Same `LinkRecord` via CF API |
@@ -53,7 +53,7 @@ Stabilize contracts; swap implementations freely. Full catalogue: [docs/CONTRACT
 }
 ```
 
-Schemas live under [`schemas/`](./schemas/).
+Schemas: [`schemas/`](./schemas/) · Types: [`types/`](./types/) · Examples: [`examples/`](./examples/)
 
 ---
 
@@ -74,17 +74,23 @@ Schemas live under [`schemas/`](./schemas/).
 
 ```
 autofix-polyglot/
-├── ROADMAP.md                 # Phased plan & checkboxes
+├── ROADMAP.md
 ├── docs/
-│   ├── ARCHITECTURE.md        # Layer model & flows
-│   ├── CONTRACTS.md           # Normative boundary catalogue
-│   ├── PARADIGMS.md           # Why each paradigm where
-│   └── ISO-MAPPING.md         # ISO analogy (software, not networking)
+│   ├── ARCHITECTURE.md
+│   ├── CONTRACTS.md
+│   ├── PARADIGMS.md
+│   └── ISO-MAPPING.md
 ├── schemas/
 │   ├── link-record.schema.json
 │   ├── discovery-message.schema.json
 │   ├── discover-request.schema.json
 │   └── discover-response.schema.json
+├── types/
+│   ├── typescript/          # Edge Worker + shared TS
+│   └── go/                  # Healer structs + KeyFor
+├── examples/
+│   ├── link-records/
+│   └── discovery-messages/
 └── README.md
 ```
 

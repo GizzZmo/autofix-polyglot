@@ -2,14 +2,18 @@
 
 These are the only cross-language boundaries. Implementations may change; contracts should not without a schema bump.
 
+Language bindings: [`types/typescript/`](../types/typescript/) · [`types/go/`](../types/go/)
+
+Golden fixtures: [`examples/`](../examples/)
+
 ---
 
 ## 1. Edge ↔ KV — `LinkRecord`
 
-- **Key**: safe base64 of the absolute original URL (UTF-8).  
-  Edge (JS): `btoa(unescape(encodeURIComponent(url)))`  
-  Healer (Go): `base64.StdEncoding.EncodeToString([]byte(url))`  
-  *Note: these must produce identical keys; align encoding if divergence is observed.*
+- **Key (canonical)**: Base64 (StdEncoding, no padding strip) of the **UTF-8 bytes** of the absolute original URL.
+  - Go: `base64.StdEncoding.EncodeToString([]byte(url))` → `types.KeyFor`
+  - TypeScript (preferred): `btoa` over `TextEncoder().encode(url)` → `urlKey()` in `types/typescript/link-record.ts`
+  - Avoid `btoa(unescape(encodeURIComponent(...)))` for non-ASCII URLs; it can diverge from Go.
 - **Value**: JSON conforming to [`schemas/link-record.schema.json`](../schemas/link-record.schema.json)
 - **Statuses**: `PENDING` | `HEALED` | `DEAD` | `HEALTHY`
 

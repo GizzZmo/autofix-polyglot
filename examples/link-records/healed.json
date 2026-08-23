@@ -1,0 +1,8 @@
+{
+  "status": "HEALED",
+  "original_url": "https://example.com/missing-page",
+  "resolved_url": "https://web.archive.org/web/20200101000000/https://example.com/missing-page",
+  "discovered_at": "2026-08-23T19:00:00Z",
+  "healed_at": "2026-08-23T19:01:12Z",
+  "reason": "http_404"
+}

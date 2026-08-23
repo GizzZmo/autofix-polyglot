@@ -1,0 +1,7 @@
+{
+  "status": "DEAD",
+  "original_url": "https://example.com/never-archived",
+  "discovered_at": "2026-08-23T19:00:00Z",
+  "healed_at": "2026-08-23T19:02:00Z",
+  "reason": "soft_404"
+}
