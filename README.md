@@ -4,7 +4,7 @@
 
 Related implementation: [autofix-engine](https://github.com/GizzZmo/autofix-engine)
 
-**Roadmap → [ROADMAP.md](./ROADMAP.md)** · **Contracts → [docs/CONTRACTS.md](./docs/CONTRACTS.md)**
+**Roadmap → [ROADMAP.md](./ROADMAP.md)** · **Contracts → [docs/CONTRACTS.md](./docs/CONTRACTS.md)** · **ADRs → [docs/adr/](./docs/adr/)**
 
 ---
 
@@ -79,15 +79,16 @@ autofix-polyglot/
 │   ├── ARCHITECTURE.md
 │   ├── CONTRACTS.md
 │   ├── PARADIGMS.md
-│   └── ISO-MAPPING.md
+│   ├── ISO-MAPPING.md
+│   └── adr/                 # Architecture Decision Records
 ├── schemas/
 │   ├── link-record.schema.json
 │   ├── discovery-message.schema.json
 │   ├── discover-request.schema.json
 │   └── discover-response.schema.json
 ├── types/
-│   ├── typescript/          # Edge Worker + shared TS
-│   └── go/                  # Healer structs + KeyFor
+│   ├── typescript/
+│   └── go/
 ├── examples/
 │   ├── link-records/
 │   └── discovery-messages/

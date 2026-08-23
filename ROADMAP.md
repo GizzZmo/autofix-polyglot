@@ -12,14 +12,14 @@ Goal: keep every language and runtime interchangeable behind stable, versioned i
 | Area | State |
 |------|--------|
 | Layer model (ISO-style) | Done — see `docs/` |
-| LinkRecord schema | Done — `schemas/link-record.schema.json` |
-| DiscoveryMessage schema | Done |
-| Discover API schemas | Done |
+| LinkRecord schema | Done |
+| Discovery + Discover API schemas | Done |
 | Contract catalogue | Done — `docs/CONTRACTS.md` |
-| Language bindings (TS + Go) | **Done (skeleton)** — `types/` |
-| Golden test vectors | **Started** — `examples/` |
+| Language bindings (TS + Go) | Done (skeleton) — `types/` |
+| Golden examples | Started — `examples/` |
+| ADRs | **Done (001–005)** — `docs/adr/` |
 | Observability contracts | Not started |
-| Key encoding formalized | **Done** |
+| Key encoding formalized | Done |
 
 ---
 
@@ -40,9 +40,7 @@ Goal: keep every language and runtime interchangeable behind stable, versioned i
 - [x] Key encoding rule formalized (UTF-8 bytes → Std base64)
 - [x] Version field / `$id` consistency across schemas
 
-### Phase 2 — Multi-language type bindings (in progress)
-
-Generate or hand-maintain types so each runtime cannot drift:
+### Phase 2 — Multi-language type bindings (skeleton complete)
 
 | Language / runtime | Target | Status |
 |--------------------|--------|--------|
@@ -51,17 +49,15 @@ Generate or hand-maintain types so each runtime cannot drift:
 | JavaScript (browser client) | Minimal subset for `data-autofix-*` only | Pending |
 | Optional | OpenAPI 3.1 for the discover HTTP surface | Pending |
 
-Acceptance: engine code can import / copy-paste from this repo without inventing parallel structs.
-
 **Next:** wire engine to these types (or generate from schema) and add a tiny CI job that validates examples against schemas.
 
-### Phase 3 — Architecture Decision Records (ADRs)
+### Phase 3 — Architecture Decision Records (ADRs) (complete for core set)
 
-- [ ] ADR-001: Why polyglot (runtime affinity > single language)
-- [ ] ADR-002: Sync request path vs async heal path
-- [ ] ADR-003: Circuit breaker placement (Edge→Healer, Healer→Wayback)
-- [ ] ADR-004: KV key = base64(URL) and collision / length policy
-- [ ] ADR-005: Soft-404 heuristics stay in healer, not edge
+- [x] ADR-001: Why polyglot (runtime affinity > single language)
+- [x] ADR-002: Sync request path vs async heal path
+- [x] ADR-003: Circuit breaker placement (Edge→Healer, Healer→Wayback)
+- [x] ADR-004: KV key = base64(URL) and collision / length policy
+- [x] ADR-005: Soft-404 heuristics stay in healer, not edge
 
 ### Phase 4 — Golden examples & test vectors (started)
 
@@ -91,6 +87,7 @@ Acceptance: engine code can import / copy-paste from this repo without inventing
 3. Update `docs/CONTRACTS.md` in the same PR as schema changes.
 4. Mark roadmap checkboxes when a phase item lands.
 5. After type changes, update the corresponding engine files so they stay aligned.
+6. **Immediate follow-ups:** (a) align engine `urlKey` / `keyFor` with the canonical TextEncoder rule, (b) add schema-validation CI, (c) optional OpenAPI for `/v1/discover`.
 
 ---
 
