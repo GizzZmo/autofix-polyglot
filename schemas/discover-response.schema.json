@@ -1,0 +1,16 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/GizzZmo/autofix-polyglot/schemas/discover-response.schema.json",
+  "title": "DiscoverResponse",
+  "description": "Successful response from POST /v1/discover.",
+  "type": "object",
+  "required": ["enqueued"],
+  "properties": {
+    "enqueued": {
+      "type": "integer",
+      "minimum": 0,
+      "description": "Number of URLs accepted into the healer's internal discovery queue."
+    }
+  },
+  "additionalProperties": false
+}

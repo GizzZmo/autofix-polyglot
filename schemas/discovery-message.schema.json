@@ -1,0 +1,22 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/GizzZmo/autofix-polyglot/schemas/discovery-message.schema.json",
+  "title": "DiscoveryMessage",
+  "description": "Payload sent from Edge Worker to the discovery queue (and conceptually to the healer).",
+  "type": "object",
+  "required": ["urls", "discovered_at"],
+  "properties": {
+    "urls": {
+      "type": "array",
+      "items": { "type": "string", "format": "uri" },
+      "minItems": 1,
+      "description": "Absolute http(s) URLs discovered on the request path that lack a KV record."
+    },
+    "discovered_at": {
+      "type": "string",
+      "format": "date-time",
+      "description": "ISO-8601 timestamp when the edge first saw the URL(s)."
+    }
+  },
+  "additionalProperties": false
+}

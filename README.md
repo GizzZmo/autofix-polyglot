@@ -4,6 +4,8 @@
 
 Related implementation: [autofix-engine](https://github.com/GizzZmo/autofix-engine)
 
+**Roadmap → [ROADMAP.md](./ROADMAP.md)** · **Contracts → [docs/CONTRACTS.md](./docs/CONTRACTS.md)**
+
 ---
 
 ## Idea
@@ -31,12 +33,12 @@ Borrow the *structure* of the **ISO/OSI model** (clear layers + stable interface
 | Boundary | Contract |
 |----------|----------|
 | Edge ↔ KV | Key = safe base64(url); JSON `LinkRecord` |
-| Edge ↔ Queue | `{ "urls": string[], "discovered_at": ISO8601 }` |
-| Edge/Queue ↔ Healer | `POST /v1/discover` `{ "urls": [...] }` |
+| Edge ↔ Queue | `DiscoveryMessage` |
+| Edge/Queue ↔ Healer | `POST /v1/discover` |
 | Healer ↔ KV | Same `LinkRecord` via CF API |
 | Healer ↔ Wayback | Availability API |
 
-Stabilize contracts; swap implementations freely.
+Stabilize contracts; swap implementations freely. Full catalogue: [docs/CONTRACTS.md](./docs/CONTRACTS.md).
 
 ### LinkRecord (shared schema)
 
@@ -50,6 +52,8 @@ Stabilize contracts; swap implementations freely.
   "reason": "http_404 | soft_404 | circuit_open"
 }
 ```
+
+Schemas live under [`schemas/`](./schemas/).
 
 ---
 
@@ -66,16 +70,21 @@ Stabilize contracts; swap implementations freely.
 
 ---
 
-## Repo layout (reference)
+## Repo layout
 
 ```
 autofix-polyglot/
+├── ROADMAP.md                 # Phased plan & checkboxes
 ├── docs/
-│   ├── ARCHITECTURE.md      # Layer model & contracts
-│   ├── PARADIGMS.md         # Why each paradigm where
-│   └── ISO-MAPPING.md       # ISO analogy (software, not networking)
+│   ├── ARCHITECTURE.md        # Layer model & flows
+│   ├── CONTRACTS.md           # Normative boundary catalogue
+│   ├── PARADIGMS.md           # Why each paradigm where
+│   └── ISO-MAPPING.md         # ISO analogy (software, not networking)
 ├── schemas/
-│   └── link-record.schema.json
+│   ├── link-record.schema.json
+│   ├── discovery-message.schema.json
+│   ├── discover-request.schema.json
+│   └── discover-response.schema.json
 └── README.md
 ```
 
@@ -85,11 +94,12 @@ Full runnable code lives in **[autofix-engine](https://github.com/GizzZmo/autofi
 
 ## Design rules
 
-1. One shared schema across languages (`LinkRecord`).
+1. One shared schema across languages (`LinkRecord` and siblings).
 2. Sync on the request path; async for healing.
 3. Never leak lower-layer types to the browser.
 4. Idempotent hops (heal twice → same KV result).
 5. Paradigm follows latency budget (edge ms, healer seconds, UI human-time).
+6. **Change contracts here first**, then implement in the engine.
 
 ---
 
