@@ -4,7 +4,8 @@
 
 Related implementation: [autofix-engine](https://github.com/GizzZmo/autofix-engine)
 
-**Roadmap → [ROADMAP.md](./ROADMAP.md)** · **Contracts → [docs/CONTRACTS.md](./docs/CONTRACTS.md)** · **ADRs → [docs/adr/](./docs/adr/)**
+**Roadmap → [ROADMAP.md](./ROADMAP.md)** · **Contracts → [docs/CONTRACTS.md](./docs/CONTRACTS.md)** · **ADRs → [docs/adr/](./docs/adr/)**  
+**Observability → [docs/OBSERVABILITY.md](./docs/OBSERVABILITY.md)** · **Versioning → [docs/VERSIONING.md](./docs/VERSIONING.md)**
 
 ---
 
@@ -39,6 +40,9 @@ Borrow the *structure* of the **ISO/OSI model** (clear layers + stable interface
 | Healer ↔ Wayback | Availability API |
 
 Stabilize contracts; swap implementations freely. Full catalogue: [docs/CONTRACTS.md](./docs/CONTRACTS.md).
+
+Versioning & deprecation: [docs/VERSIONING.md](./docs/VERSIONING.md).  
+Logs & metrics: [docs/OBSERVABILITY.md](./docs/OBSERVABILITY.md).
 
 ### LinkRecord (shared schema)
 
@@ -84,29 +88,24 @@ CI runs the same check on every push/PR to `main`.
 ```
 autofix-polyglot/
 ├── ROADMAP.md
-├── package.json                 # npm run validate
+├── package.json
 ├── scripts/validate-schemas.mjs
 ├── .github/workflows/ci.yml
 ├── docs/
 │   ├── ARCHITECTURE.md
 │   ├── CONTRACTS.md
+│   ├── OBSERVABILITY.md
+│   ├── VERSIONING.md
 │   ├── PARADIGMS.md
 │   ├── ISO-MAPPING.md
 │   └── adr/
 ├── schemas/
 ├── types/
-│   ├── typescript/
-│   └── go/
 ├── examples/
-│   ├── link-records/
-│   ├── discovery-messages/
-│   ├── discover-request/
-│   ├── discover-response/
-│   └── invalid/                 # must be rejected by schemas
 └── README.md
 ```
 
-Full runnable code lives in **[autofix-engine](https://github.com/GizzZmo/autofix-engine)** (Edge Worker, Go healer, client, deploy scripts).
+Full runnable code lives in **[autofix-engine](https://github.com/GizzZmo/autofix-engine)**.
 
 ---
 
@@ -118,6 +117,7 @@ Full runnable code lives in **[autofix-engine](https://github.com/GizzZmo/autofi
 4. Idempotent hops (heal twice → same KV result).
 5. Paradigm follows latency budget (edge ms, healer seconds, UI human-time).
 6. **Change contracts here first**, then implement in the engine.
+7. Logs/metrics use the shared vocabulary in `docs/OBSERVABILITY.md`.
 
 ---
 

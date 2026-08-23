@@ -17,9 +17,10 @@ Goal: keep every language and runtime interchangeable behind stable, versioned i
 | Contract catalogue | Done — `docs/CONTRACTS.md` |
 | Language bindings (TS + Go) | Done (skeleton) — `types/` |
 | Golden examples | Done — `examples/` (+ invalid cases) |
-| Schema validation CI | **Done** — `.github/workflows/ci.yml` |
-| ADRs | Done (001–005) — `docs/adr/` |
-| Observability contracts | Not started |
+| Schema validation CI | Done — `.github/workflows/ci.yml` |
+| ADRs | Done (001–007) — `docs/adr/` |
+| Observability contracts | **Done** — `docs/OBSERVABILITY.md` |
+| Versioning & deprecation | **Done** — `docs/VERSIONING.md` |
 | Key encoding formalized | Done |
 
 ---
@@ -50,7 +51,7 @@ Goal: keep every language and runtime interchangeable behind stable, versioned i
 | JavaScript (browser client) | Minimal subset for `data-autofix-*` only | Pending |
 | Optional | OpenAPI 3.1 for the discover HTTP surface | Pending |
 
-**Next:** wire engine to these types (or generate from schema).
+**Next:** wire engine to these types (or generate from schema); adopt observability field names when touching logs.
 
 ### Phase 3 — Architecture Decision Records (ADRs) (complete for core set)
 
@@ -59,6 +60,8 @@ Goal: keep every language and runtime interchangeable behind stable, versioned i
 - [x] ADR-003: Circuit breaker placement (Edge→Healer, Healer→Wayback)
 - [x] ADR-004: KV key = base64(URL) and collision / length policy
 - [x] ADR-005: Soft-404 heuristics stay in healer, not edge
+- [x] ADR-006: Shared observability contracts
+- [x] ADR-007: Schema versioning and polyglot-first evolution
 
 ### Phase 4 — Golden examples & test vectors (complete)
 
@@ -68,28 +71,38 @@ Goal: keep every language and runtime interchangeable behind stable, versioned i
 - [x] Invalid / edge-case fixtures under `examples/invalid/`
 - [x] Contract tests (JSON Schema validation) in CI — `npm run validate`
 
-### Phase 5 — Observability contracts
+### Phase 5 — Observability contracts (complete)
 
-- [ ] Structured log fields (common keys across TS + Go)
-- [ ] Metrics names (heal latency, circuit open rate, queue depth)
-- [ ] Optional OpenTelemetry semantic conventions note
+- [x] Structured log fields (common keys across TS + Go) — `docs/OBSERVABILITY.md`
+- [x] Metrics names (heal latency, circuit open rate, queue depth)
+- [x] Optional OpenTelemetry semantic conventions note
 
-### Phase 6 — Evolution & versioning
+### Phase 6 — Evolution & versioning (complete)
 
-- [ ] Schema versioning strategy (`LinkRecord` v1 → v2 migration rules)
-- [ ] Deprecation policy for status values / fields
-- [ ] Keep polyglot ahead of engine: change contracts here first, then implement
+- [x] Schema versioning strategy (`LinkRecord` v1 → v2 migration rules) — `docs/VERSIONING.md`
+- [x] Deprecation policy for status values / fields
+- [x] Keep polyglot ahead of engine: change contracts here first, then implement
 
 ---
 
 ## How to continue development
 
-1. Prefer **contract changes in this repo** before code changes in `autofix-engine`.
+1. Prefer **contract changes in this repo** before code changes in `autofix-engine` (see `docs/VERSIONING.md` §5).
 2. Any new cross-language field must appear in the relevant JSON Schema first.
 3. Update `docs/CONTRACTS.md` in the same PR as schema changes.
 4. Mark roadmap checkboxes when a phase item lands.
 5. After type changes, update the corresponding engine files so they stay aligned.
 6. Run `npm run validate` (or rely on CI) before merging schema/example changes.
+7. When adding logs/metrics in the engine, use names from `docs/OBSERVABILITY.md`.
+
+---
+
+## Suggested follow-ups (post Phase 6)
+
+- Wire engine types to `types/` (or codegen from schemas)
+- Adopt structured logging in edge + healer per OBSERVABILITY.md
+- Optional OpenAPI 3.1 for `/v1/discover`
+- Browser client type subset for `data-autofix-*`
 
 ---
 
