@@ -7,7 +7,7 @@ Goal: keep every language and runtime interchangeable behind stable, versioned i
 
 ---
 
-## Current status (2026-08-23)
+## Current status (2026-08-24)
 
 | Area | State |
 |------|--------|
@@ -18,9 +18,10 @@ Goal: keep every language and runtime interchangeable behind stable, versioned i
 | Language bindings (TS + Go) | Done (skeleton) — `types/` |
 | Golden examples | Done — `examples/` (+ invalid cases) |
 | Schema validation CI | Done — `.github/workflows/ci.yml` |
-| ADRs | Done (001–007) — `docs/adr/` |
+| ADRs | Done (001–008) — `docs/adr/` |
 | Observability contracts | **Done** — `docs/OBSERVABILITY.md` |
 | Versioning & deprecation | **Done** — `docs/VERSIONING.md` |
+| Command centre contracts | **In progress** — `docs/COMMAND_CENTRE.md` (Phase 7A) |
 | Key encoding formalized | Done |
 
 ---
@@ -62,6 +63,7 @@ Goal: keep every language and runtime interchangeable behind stable, versioned i
 - [x] ADR-005: Soft-404 heuristics stay in healer, not edge
 - [x] ADR-006: Shared observability contracts
 - [x] ADR-007: Schema versioning and polyglot-first evolution
+- [x] ADR-008: Command centre (ops UI + admin contracts)
 
 ### Phase 4 — Golden examples & test vectors (complete)
 
@@ -83,6 +85,23 @@ Goal: keep every language and runtime interchangeable behind stable, versioned i
 - [x] Deprecation policy for status values / fields
 - [x] Keep polyglot ahead of engine: change contracts here first, then implement
 
+### Phase 7 — Command centre (HCI + admin contracts)
+
+**7A — Observe (stats)** — contracts landed; engine UI scaffold in progress
+
+- [x] ADR-008 + `docs/COMMAND_CENTRE.md`
+- [x] `GET /v1/admin/stats` response schema (`schemas/admin-stats-response.schema.json`)
+- [x] Catalogue boundary in `docs/CONTRACTS.md` §7
+- [ ] Engine: minimal command-centre UI (scrape `/metrics` + `/healthz`, optional JSON stats)
+- [ ] Engine: optional `GET /v1/admin/stats` JSON endpoint aligned to schema
+- [ ] Golden example for admin-stats response + CI validate
+
+**7B — Supervise (writes)** — future
+
+- [ ] Admin action schemas (requeue, override, circuit reset) + audit fields
+- [ ] Auth requirements (token / Access / mTLS)
+- [ ] Engine implementation of write paths
+
 ---
 
 ## How to continue development
@@ -94,20 +113,22 @@ Goal: keep every language and runtime interchangeable behind stable, versioned i
 5. After type changes, update the corresponding engine files so they stay aligned.
 6. Run `npm run validate` (or rely on CI) before merging schema/example changes.
 7. When adding logs/metrics in the engine, use names from `docs/OBSERVABILITY.md`.
+8. Command centre UI must consume only published admin/metrics contracts — no direct KV/Wayback from the browser.
 
 ---
 
-## Suggested follow-ups (post Phase 6)
+## Suggested follow-ups
 
 - Wire engine types to `types/` (or codegen from schemas)
-- Adopt structured logging in edge + healer per OBSERVABILITY.md
-- Optional OpenAPI 3.1 for `/v1/discover`
+- Optional OpenAPI 3.1 for `/v1/discover` + `/v1/admin/*`
 - Browser client type subset for `data-autofix-*`
+- Phase 7B supervised actions + audit
+- Multi-archive backends beyond Wayback (may be future phase)
 
 ---
 
 ## Non-goals (for now)
 
 - Full reimplementation of the edge worker or healer inside this repo
-- UI / dashboard
-- Multi-archive backends beyond Wayback (may be future phase)
+- Multi-tenant SaaS control plane
+- Replacing general observability stacks (Grafana remains valid)

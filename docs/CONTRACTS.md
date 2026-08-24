@@ -97,6 +97,25 @@ Client script must **not** depend on lower-layer types (no raw `LinkRecord` in t
 
 ---
 
+## 7. Command centre ↔ Healer (ops HCI)
+
+Normative detail: [`docs/COMMAND_CENTRE.md`](./COMMAND_CENTRE.md) · ADR-008.
+
+| Surface | Contract |
+|---------|----------|
+| Health | `GET /healthz` — process liveness + circuit string |
+| Metrics | `GET /metrics` — Prometheus names from OBSERVABILITY.md |
+| Stats JSON (optional) | `GET /v1/admin/stats` — [`schemas/admin-stats-response.schema.json`](../schemas/admin-stats-response.schema.json) |
+
+**Rules**
+
+1. Command centre is a **read client** in Phase 7A (stats only).
+2. Browser must not hold Cloudflare credentials or call KV/Wayback directly.
+3. Write/supervise actions are Phase 7B and require auth + audit schemas first.
+4. Grafana and other Prom consumers remain valid; they are not part of this boundary’s schema set.
+
+---
+
 ## Invariants
 
 1. One shared schema family across languages.
@@ -104,3 +123,4 @@ Client script must **not** depend on lower-layer types (no raw `LinkRecord` in t
 3. Idempotent hops (heal twice → same KV result).
 4. Failures contained by circuit breakers; never cascade to full page failure.
 5. Upper layers depend on interfaces, never on concrete language types of lower layers.
+6. Ops UI depends only on published admin/metrics contracts (§7).
