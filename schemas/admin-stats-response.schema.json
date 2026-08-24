@@ -1,0 +1,81 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/GizzZmo/autofix-polyglot/schemas/admin-stats-response.schema.json",
+  "title": "AdminStatsResponse",
+  "description": "Point-in-time healer stats for command-centre UIs (Phase 7A). Low cardinality only.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["service", "ts", "health"],
+  "properties": {
+    "service": {
+      "type": "string",
+      "const": "autofix-healer"
+    },
+    "ts": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Snapshot time (UTC preferred)"
+    },
+    "health": {
+      "type": "string",
+      "enum": ["ok", "degraded", "down"]
+    },
+    "circuits": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["name", "state", "state_code"],
+        "properties": {
+          "name": {
+            "type": "string",
+            "enum": ["healer_wayback", "edge_healer"]
+          },
+          "state": {
+            "type": "string",
+            "enum": ["closed", "half_open", "open"]
+          },
+          "state_code": {
+            "type": "integer",
+            "enum": [0, 1, 2],
+            "description": "0=closed 1=half_open 2=open (matches autofix_circuit_state)"
+          },
+          "trips_total": {
+            "type": "integer",
+            "minimum": 0
+          }
+        }
+      }
+    },
+    "queue_depth": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "discover_requests_total": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "http": { "type": "integer", "minimum": 0 },
+        "queue": { "type": "integer", "minimum": 0 }
+      }
+    },
+    "links_written": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "PENDING": { "type": "integer", "minimum": 0 },
+        "HEALED": { "type": "integer", "minimum": 0 },
+        "DEAD": { "type": "integer", "minimum": 0 },
+        "HEALTHY": { "type": "integer", "minimum": 0 }
+      }
+    },
+    "heal_duration_seconds": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "count": { "type": "number", "minimum": 0 },
+        "sum": { "type": "number", "minimum": 0 }
+      }
+    }
+  }
+}
