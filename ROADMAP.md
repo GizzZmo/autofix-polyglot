@@ -7,7 +7,7 @@ Goal: keep every language and runtime interchangeable behind stable, versioned i
 
 ---
 
-## Current status (2026-08-24)
+## Current status (2026-08-26)
 
 | Area | State |
 |------|--------|
@@ -21,7 +21,7 @@ Goal: keep every language and runtime interchangeable behind stable, versioned i
 | ADRs | Done (001–008) — `docs/adr/` |
 | Observability contracts | **Done** — `docs/OBSERVABILITY.md` |
 | Versioning & deprecation | **Done** — `docs/VERSIONING.md` |
-| Command centre contracts | **In progress** — `docs/COMMAND_CENTRE.md` (Phase 7A) |
+| Command centre contracts | **Done (7A)** — `docs/COMMAND_CENTRE.md` |
 | Key encoding formalized | Done |
 
 ---
@@ -87,14 +87,14 @@ Goal: keep every language and runtime interchangeable behind stable, versioned i
 
 ### Phase 7 — Command centre (HCI + admin contracts)
 
-**7A — Observe (stats)** — contracts landed; engine UI scaffold in progress
+**7A — Observe (stats)** — **complete**
 
 - [x] ADR-008 + `docs/COMMAND_CENTRE.md`
 - [x] `GET /v1/admin/stats` response schema (`schemas/admin-stats-response.schema.json`)
 - [x] Catalogue boundary in `docs/CONTRACTS.md` §7
-- [ ] Engine: minimal command-centre UI (scrape `/metrics` + `/healthz`, optional JSON stats)
-- [ ] Engine: optional `GET /v1/admin/stats` JSON endpoint aligned to schema
-- [ ] Golden example for admin-stats response + CI validate
+- [x] Engine: minimal command-centre UI (`command-centre/`, prefers JSON stats, falls back to `/metrics`)
+- [x] Engine: `GET /v1/admin/stats` JSON endpoint + CORS middleware
+- [ ] Golden example for admin-stats response + CI validate (optional polish)
 
 **7B — Supervise (writes)** — future
 
@@ -123,6 +123,7 @@ Goal: keep every language and runtime interchangeable behind stable, versioned i
 - Optional OpenAPI 3.1 for `/v1/discover` + `/v1/admin/*`
 - Browser client type subset for `data-autofix-*`
 - Phase 7B supervised actions + audit
+- Golden admin-stats example + CI
 - Multi-archive backends beyond Wayback (may be future phase)
 
 ---
