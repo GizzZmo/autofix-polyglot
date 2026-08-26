@@ -1,0 +1,5 @@
+{
+  "action": "circuit.reset",
+  "actor": "ops@example.com",
+  "circuit_name": "healer_wayback"
+}

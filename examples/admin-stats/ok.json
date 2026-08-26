@@ -1,0 +1,28 @@
+{
+  "service": "autofix-healer",
+  "ts": "2026-08-24T19:00:00Z",
+  "health": "ok",
+  "circuits": [
+    {
+      "name": "healer_wayback",
+      "state": "closed",
+      "state_code": 0,
+      "trips_total": 0
+    }
+  ],
+  "queue_depth": 3,
+  "discover_requests_total": {
+    "http": 12,
+    "queue": 0
+  },
+  "links_written": {
+    "PENDING": 1,
+    "HEALED": 4,
+    "DEAD": 2,
+    "HEALTHY": 5
+  },
+  "heal_duration_seconds": {
+    "count": 11,
+    "sum": 4.2
+  }
+}

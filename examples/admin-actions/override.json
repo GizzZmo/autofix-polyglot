@@ -1,0 +1,7 @@
+{
+  "action": "link.override",
+  "actor": "ops@example.com",
+  "reason": "False positive soft-404; mark healthy",
+  "urls": ["https://example.com/docs"],
+  "status": "HEALTHY"
+}

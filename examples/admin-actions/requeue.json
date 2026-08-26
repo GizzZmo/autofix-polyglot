@@ -1,0 +1,6 @@
+{
+  "action": "link.requeue",
+  "actor": "ops@example.com",
+  "reason": "Operator requested re-heal after archive catch-up",
+  "urls": ["https://example.com/gone"]
+}

@@ -1,0 +1,12 @@
+{
+  "audit_id": "01J6QK0EXAMPLEAUDITID",
+  "ts": "2026-08-26T12:00:00Z",
+  "actor": "ops@example.com",
+  "action": "circuit.reset",
+  "reason": "Wayback recovered; clear open breaker",
+  "ok": true,
+  "circuit_name": "healer_wayback",
+  "before": { "state": "open" },
+  "after": { "state": "closed" },
+  "trace_id": "0af7651916cd43dd8448eb211c80319c"
+}

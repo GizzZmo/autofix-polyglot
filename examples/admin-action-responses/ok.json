@@ -1,0 +1,10 @@
+{
+  "ok": true,
+  "action": "circuit.reset",
+  "audit_id": "01J6QK0EXAMPLEAUDITID",
+  "ts": "2026-08-26T12:00:00Z",
+  "result": {
+    "circuit_name": "healer_wayback",
+    "state": "closed"
+  }
+}

@@ -1,0 +1,6 @@
+{
+  "action": "circuit.reset",
+  "actor": "ops@example.com",
+  "reason": "Wayback recovered; clear open breaker",
+  "circuit_name": "healer_wayback"
+}
