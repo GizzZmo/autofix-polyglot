@@ -16,12 +16,12 @@ Goal: keep every language and runtime interchangeable behind stable, versioned i
 | Discovery + Discover API schemas | Done |
 | Contract catalogue | Done — `docs/CONTRACTS.md` |
 | Language bindings (TS + Go) | Done (skeleton) — `types/` |
-| Golden examples | Done — `examples/` (+ invalid cases) |
+| Golden examples | Done — `examples/` (+ invalid cases, incl. admin-stats) |
 | Schema validation CI | Done — `.github/workflows/ci.yml` |
-| ADRs | Done (001–008) — `docs/adr/` |
+| ADRs | Done (001–009) — `docs/adr/` |
 | Observability contracts | **Done** — `docs/OBSERVABILITY.md` |
 | Versioning & deprecation | **Done** — `docs/VERSIONING.md` |
-| Command centre contracts | **Done (7A)** — `docs/COMMAND_CENTRE.md` |
+| Command centre contracts | **Done (7A + 7B schemas)** — `docs/COMMAND_CENTRE.md` |
 | Key encoding formalized | Done |
 
 ---
@@ -64,6 +64,7 @@ Goal: keep every language and runtime interchangeable behind stable, versioned i
 - [x] ADR-006: Shared observability contracts
 - [x] ADR-007: Schema versioning and polyglot-first evolution
 - [x] ADR-008: Command centre (ops UI + admin contracts)
+- [x] ADR-009: Supervised admin writes (auth + audit)
 
 ### Phase 4 — Golden examples & test vectors (complete)
 
@@ -72,6 +73,7 @@ Goal: keep every language and runtime interchangeable behind stable, versioned i
 - [x] `examples/discover-request/` + `discover-response/`
 - [x] Invalid / edge-case fixtures under `examples/invalid/`
 - [x] Contract tests (JSON Schema validation) in CI — `npm run validate`
+- [x] `examples/admin-stats/` + invalid cases in CI
 
 ### Phase 5 — Observability contracts (complete)
 
@@ -94,13 +96,14 @@ Goal: keep every language and runtime interchangeable behind stable, versioned i
 - [x] Catalogue boundary in `docs/CONTRACTS.md` §7
 - [x] Engine: minimal command-centre UI (`command-centre/`, prefers JSON stats, falls back to `/metrics`)
 - [x] Engine: `GET /v1/admin/stats` JSON endpoint + CORS middleware
-- [ ] Golden example for admin-stats response + CI validate (optional polish)
+- [x] Golden example for admin-stats response + CI validate
 
-**7B — Supervise (writes)** — future
+**7B — Supervise (writes)** — **contracts complete; engine follows**
 
-- [ ] Admin action schemas (requeue, override, circuit reset) + audit fields
-- [ ] Auth requirements (token / Access / mTLS)
-- [ ] Engine implementation of write paths
+- [x] Admin action schemas (requeue, override, circuit reset, discovery pause/resume) + audit fields
+- [x] Auth requirements (Bearer `ADMIN_TOKEN`)
+- [x] ADR-009
+- [ ] Engine implementation of write paths + audit ring (autofix-engine)
 
 ---
 
@@ -122,8 +125,7 @@ Goal: keep every language and runtime interchangeable behind stable, versioned i
 - Wire engine types to `types/` (or codegen from schemas)
 - Optional OpenAPI 3.1 for `/v1/discover` + `/v1/admin/*`
 - Browser client type subset for `data-autofix-*`
-- Phase 7B supervised actions + audit
-- Golden admin-stats example + CI
+- Engine Phase 7B supervised actions + command-centre write controls
 - Multi-archive backends beyond Wayback (may be future phase)
 
 ---
