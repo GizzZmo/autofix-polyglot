@@ -4,7 +4,7 @@
 
 Related implementation: [autofix-engine](https://github.com/GizzZmo/autofix-engine)
 
-**Roadmap → [ROADMAP.md](./ROADMAP.md)** · **Contracts → [docs/CONTRACTS.md](./docs/CONTRACTS.md)** · **ADRs → [docs/adr/](./docs/adr/)**  
+**Blueprint → [BLUEPRINT.md](./BLUEPRINT.md)** · **Roadmap → [ROADMAP.md](./ROADMAP.md)** · **Contracts → [docs/CONTRACTS.md](./docs/CONTRACTS.md)** · **ADRs → [docs/adr/](./docs/adr/)**  
 **Observability → [docs/OBSERVABILITY.md](./docs/OBSERVABILITY.md)** · **Versioning → [docs/VERSIONING.md](./docs/VERSIONING.md)**
 
 ---
@@ -87,6 +87,7 @@ CI runs the same check on every push/PR to `main`.
 
 ```
 autofix-polyglot/
+├── BLUEPRINT.md
 ├── ROADMAP.md
 ├── package.json
 ├── scripts/validate-schemas.mjs
