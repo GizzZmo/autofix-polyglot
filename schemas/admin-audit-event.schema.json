@@ -1,0 +1,35 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/GizzZmo/autofix-polyglot/schemas/admin-audit-event.schema.json",
+  "title": "AdminAuditEvent",
+  "description": "Immutable record of a supervised write (Phase 7B).",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["audit_id", "ts", "actor", "action", "reason", "ok"],
+  "properties": {
+    "audit_id": { "type": "string", "minLength": 1 },
+    "ts": { "type": "string", "format": "date-time" },
+    "actor": { "type": "string", "minLength": 1 },
+    "action": {
+      "type": "string",
+      "enum": [
+        "link.requeue",
+        "link.override",
+        "circuit.reset",
+        "discovery.pause",
+        "discovery.resume"
+      ]
+    },
+    "reason": { "type": "string", "minLength": 1 },
+    "ok": { "type": "boolean" },
+    "urls": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "circuit_name": { "type": "string" },
+    "before": { "type": "object", "additionalProperties": true },
+    "after": { "type": "object", "additionalProperties": true },
+    "error": { "type": "string" },
+    "trace_id": { "type": "string" }
+  }
+}

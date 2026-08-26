@@ -1,0 +1,28 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/GizzZmo/autofix-polyglot/schemas/admin-action-response.schema.json",
+  "title": "AdminActionResponse",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["ok", "action", "audit_id", "ts"],
+  "properties": {
+    "ok": { "type": "boolean" },
+    "action": {
+      "type": "string",
+      "enum": [
+        "link.requeue",
+        "link.override",
+        "circuit.reset",
+        "discovery.pause",
+        "discovery.resume"
+      ]
+    },
+    "audit_id": { "type": "string", "minLength": 1 },
+    "ts": { "type": "string", "format": "date-time" },
+    "error": { "type": "string" },
+    "result": {
+      "type": "object",
+      "additionalProperties": true
+    }
+  }
+}
