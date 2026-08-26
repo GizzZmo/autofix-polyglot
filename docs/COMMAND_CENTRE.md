@@ -1,10 +1,10 @@
 # Command centre contracts
 
-Human–computer interface for **observing** and (later) **supervising** AutoFix.
+Human–computer interface for **observing** and **supervising** AutoFix.
 
 Contracts live here; runnable UI lives in [autofix-engine](https://github.com/GizzZmo/autofix-engine) (`command-centre/`).
 
-Related: [OBSERVABILITY.md](./OBSERVABILITY.md) · [ADR-008](./adr/008-command-centre.md)
+Related: [OBSERVABILITY.md](./OBSERVABILITY.md) · [ADR-008](./adr/008-command-centre.md) · [ADR-009](./adr/009-supervised-admin.md)
 
 ---
 
@@ -13,9 +13,9 @@ Related: [OBSERVABILITY.md](./OBSERVABILITY.md) · [ADR-008](./adr/008-command-c
 | Mode | Purpose |
 |------|----------|
 | **Observe (Phase 7A)** | Live KPIs: heal outcomes, latency, circuits, queue depth, discover volume |
-| **Supervise (Phase 7B)** | Human actions: re-heal URL, override status, reset circuit, pause discovery — with audit |
+| **Supervise (Phase 7B)** | Human actions: re-heal URL, override status, reset circuit, pause discovery — with auth + audit |
 
-Non-goals for 7A: multi-tenant RBAC, full log search, replacing Grafana.
+Non-goals: multi-tenant RBAC, full log search, replacing Grafana.
 
 ---
 
@@ -25,48 +25,24 @@ Non-goals for 7A: multi-tenant RBAC, full log search, replacing Grafana.
 |--------|------|
 | `GET /healthz` | Liveness + `wayback_circuit` string |
 | `GET /metrics` | Prometheus text (names from OBSERVABILITY.md) |
-| `GET /v1/admin/stats` | Optional JSON snapshot (schema below) for UI without Prom parsing |
+| `GET /v1/admin/stats` | JSON snapshot for UI without Prom parsing |
+| `GET /v1/admin/audit` | Recent audit events (auth required) |
 
-The command centre **must not** call Cloudflare KV or Wayback directly; it goes through the healer (or a future admin gateway).
+The command centre **must not** call Cloudflare KV or Wayback directly; it goes through the healer.
 
 ---
 
-## 3. `GET /v1/admin/stats` (optional JSON)
+## 3. `GET /v1/admin/stats`
 
 Schema: [`schemas/admin-stats-response.schema.json`](../schemas/admin-stats-response.schema.json)
 
-Purpose: a low-cardinality snapshot for UIs that prefer JSON over Prometheus exposition.
+Golden fixture: [`examples/admin-stats/ok.json`](../examples/admin-stats/ok.json)
 
 **Semantics**
 
-- Values are **point-in-time** (or process lifetime counters), not guaranteed durable across restarts unless the implementation persists them.
-- `circuit_state` uses the same encoding as metric `autofix_circuit_state`: `0` closed, `1` half_open, `2` open.
-- `links_written` mirrors counter `autofix_links_total` by status (lifetime of process unless noted).
-
-Example:
-
-```json
-{
-  "service": "autofix-healer",
-  "ts": "2026-08-24T19:00:00Z",
-  "health": "ok",
-  "circuits": [
-    { "name": "healer_wayback", "state": "closed", "state_code": 0, "trips_total": 0 }
-  ],
-  "queue_depth": 3,
-  "discover_requests_total": { "http": 12, "queue": 0 },
-  "links_written": {
-    "PENDING": 1,
-    "HEALED": 4,
-    "DEAD": 2,
-    "HEALTHY": 5
-  },
-  "heal_duration_seconds": {
-    "count": 11,
-    "sum": 4.2
-  }
-}
-```
+- Values are **point-in-time** (or process lifetime counters), not guaranteed durable across restarts.
+- Circuit `state_code` matches metric `autofix_circuit_state`: `0` closed, `1` half_open, `2` open.
+- `links_written` mirrors `autofix_links_total` by status.
 
 ---
 
@@ -76,43 +52,53 @@ Minimal command centre **should**:
 
 1. Let the operator set **healer base URL** (e.g. `http://localhost:8080`).
 2. Poll `/healthz` and either `/metrics` or `/v1/admin/stats` on an interval (e.g. 5–15 s).
-3. Display:
-   - Health + Wayback circuit
-   - Queue depth
-   - Discover request counts
-   - Links written by status
-   - Optional: simple latency summary from histogram count/sum
-4. Fail softly when CORS or network blocks (show error, do not crash).
+3. Display health, Wayback circuit, queue depth, discover counts, links written by status, optional latency summary.
+4. Fail softly when CORS or network blocks.
 
-Minimal command centre **must not** (7A):
+Minimal command centre **must not**:
 
-- Mutate link records or circuits without Phase 7B contracts + auth.
-- Embed secrets in the static UI (no CF tokens in browser).
+- Embed Cloudflare tokens in the static UI.
+- Call write endpoints without an operator-supplied admin token (7B).
 
 ---
 
-## 5. Supervision (Phase 7B — future)
+## 5. Supervision (Phase 7B)
 
-Draft action catalogue (schemas TBD):
+| Surface | Contract |
+|---------|----------|
+| Writes | `POST /v1/admin/actions` — [`schemas/admin-action-request.schema.json`](../schemas/admin-action-request.schema.json) |
+| Result | [`schemas/admin-action-response.schema.json`](../schemas/admin-action-response.schema.json) |
+| Audit item | [`schemas/admin-audit-event.schema.json`](../schemas/admin-audit-event.schema.json) |
 
 | Action | Intent |
 |--------|--------|
-| `link.requeue` | POST URL(s) to `/v1/discover` with audit |
-| `link.override` | Write `LinkRecord` with operator reason |
-| `circuit.reset` | Clear breaker state |
-| `discovery.pause` | Stop consuming internal queue |
+| `link.requeue` | Enqueue URL(s) for another heal pass (bypasses in-process dedupe) |
+| `link.override` | Write `LinkRecord` with operator `status` / optional `resolved_url` |
+| `circuit.reset` | Force breaker to `closed` |
+| `discovery.pause` | Stop workers consuming the internal queue |
+| `discovery.resume` | Resume consumption |
 
-Every write requires: `actor`, `action`, `ts`, `before`/`after` (or equivalent audit log).
+**Auth**
+
+```
+Authorization: Bearer <ADMIN_TOKEN>
+```
+
+- If `ADMIN_TOKEN` is unset, the healer **must** return `503` on write endpoints.
+- If the header is missing or wrong, return `401`.
+- Stats/metrics/healthz do not require the token (network isolation still recommended).
+
+**Audit**
+
+Every authenticated write attempt emits:
+
+- Structured log `event=admin.action` with `actor`, `action`, `reason`, `ok`, `audit_id`, `trace_id`
+- An `AdminAuditEvent` stored in-process (recent ring) and/or forwarded to the log sink
+
+`actor` and `reason` are **required** in the request body (never inferred only from the token).
 
 ---
 
-## 6. Auth
+## 6. Relationship to Grafana / OTel
 
-- **7A (stats)**: network isolation or reverse-proxy auth is enough for internal use; document exposure risk of `/metrics`.
-- **7B (writes)**: mandatory auth (token, mTLS, or Cloudflare Access). Never ship open admin write endpoints.
-
----
-
-## 7. Relationship to Grafana
-
-Grafana (or any PromQL UI) remains a first-class consumer of metric **names** in OBSERVABILITY.md. The command centre is product-specific HCI, not a replacement for general observability stacks.
+Grafana remains a first-class consumer of metric names in OBSERVABILITY.md. The command centre is product-specific HCI. Distributed traces stay in the OTel backend (Tempo/Jaeger/etc.); the UI does not replace that.
