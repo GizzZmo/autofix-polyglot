@@ -21,7 +21,8 @@ Goal: keep every language and runtime interchangeable behind stable, versioned i
 | ADRs | Done (001–009) — `docs/adr/` |
 | Observability contracts | **Done** — `docs/OBSERVABILITY.md` |
 | Versioning & deprecation | **Done** — `docs/VERSIONING.md` |
-| Command centre contracts | **Done (7A + 7B schemas)** — `docs/COMMAND_CENTRE.md` |
+| Command centre contracts | **Done (7A + 7B)** — `docs/COMMAND_CENTRE.md` |
+| Engine command-centre UI | **Done (observe + supervise)** — autofix-engine `command-centre/` |
 | Key encoding formalized | Done |
 
 ---
@@ -98,12 +99,13 @@ Goal: keep every language and runtime interchangeable behind stable, versioned i
 - [x] Engine: `GET /v1/admin/stats` JSON endpoint + CORS middleware
 - [x] Golden example for admin-stats response + CI validate
 
-**7B — Supervise (writes)** — **contracts complete; engine follows**
+**7B — Supervise (writes)** — **complete**
 
 - [x] Admin action schemas (requeue, override, circuit reset, discovery pause/resume) + audit fields
 - [x] Auth requirements (Bearer `ADMIN_TOKEN`)
 - [x] ADR-009
-- [ ] Engine implementation of write paths + audit ring (autofix-engine)
+- [x] Engine implementation of write paths + audit ring (autofix-engine `healer/admin.go`)
+- [x] Engine command-centre write controls (`POST /v1/admin/actions` + audit panel)
 
 ---
 
@@ -125,7 +127,6 @@ Goal: keep every language and runtime interchangeable behind stable, versioned i
 - Wire engine types to `types/` (or codegen from schemas)
 - Optional OpenAPI 3.1 for `/v1/discover` + `/v1/admin/*`
 - Browser client type subset for `data-autofix-*`
-- Engine Phase 7B supervised actions + command-centre write controls
 - Multi-archive backends beyond Wayback (may be future phase)
 
 ---

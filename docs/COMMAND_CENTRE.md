@@ -46,19 +46,23 @@ Golden fixture: [`examples/admin-stats/ok.json`](../examples/admin-stats/ok.json
 
 ---
 
-## 4. UI expectations (Phase 7A)
+## 4. UI expectations
 
 Minimal command centre **should**:
 
 1. Let the operator set **healer base URL** (e.g. `http://localhost:8080`).
 2. Poll `/healthz` and either `/metrics` or `/v1/admin/stats` on an interval (e.g. 5–15 s).
-3. Display health, Wayback circuit, queue depth, discover counts, links written by status, optional latency summary.
+3. Display health, Wayback circuit, pause flag, queue depth, discover counts, links written by status, optional latency summary.
 4. Fail softly when CORS or network blocks.
+5. For Phase 7B: accept an operator-pasted `ADMIN_TOKEN`, `actor`, and `reason`; post the closed action vocabulary to `/v1/admin/actions`; render the audit ring from `/v1/admin/audit`.
 
 Minimal command centre **must not**:
 
 - Embed Cloudflare tokens in the static UI.
-- Call write endpoints without an operator-supplied admin token (7B).
+- Call write endpoints without an operator-supplied admin token.
+- Infer `actor` / `reason` from the bearer token.
+
+Engine UI: `command-centre/` in autofix-engine implements 7A + 7B against these contracts.
 
 ---
 
