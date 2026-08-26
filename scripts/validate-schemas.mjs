@@ -61,6 +61,26 @@ const suites = [
     valid: listJson("examples/discover-response"),
     invalid: listJson("examples/invalid/discover-response"),
   },
+  {
+    schema: "schemas/admin-stats-response.schema.json",
+    valid: listJson("examples/admin-stats"),
+    invalid: listJson("examples/invalid/admin-stats"),
+  },
+  {
+    schema: "schemas/admin-action-request.schema.json",
+    valid: listJson("examples/admin-actions"),
+    invalid: listJson("examples/invalid/admin-actions"),
+  },
+  {
+    schema: "schemas/admin-action-response.schema.json",
+    valid: listJson("examples/admin-action-responses"),
+    invalid: [],
+  },
+  {
+    schema: "schemas/admin-audit-event.schema.json",
+    valid: listJson("examples/admin-audit"),
+    invalid: [],
+  },
 ];
 
 let failed = 0;
@@ -110,10 +130,11 @@ for (const suite of suites) {
   }
 }
 
-// Guard: at least one valid fixture per core schema must exist
 const requiredValid = [
   "examples/link-records",
   "examples/discovery-messages",
+  "examples/admin-stats",
+  "examples/admin-actions",
 ];
 for (const dir of requiredValid) {
   if (listJson(dir).length === 0) {
